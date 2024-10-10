@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subtitle Helper</title>
+    <meta name="description" content="Open source helper tool to create subtitle files for YouTube videos. No tracking, no telemetry, no privacy concerns!">
+    <!-- TODO: add OG, copy from my own -->
+    <script src="script.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Subtitle Helper</h1>
+    <p>This is an open source tool to help create subtitle <code>.lrc</code> files for YouTube videos.</p>
+    <p>Since this is a serverless static site served on GitHub Pages,</p>
+    <p>there is absolutely no tracking, no telemetry, hence zero privacy concerns!</p>
+    <p>Feel safe to use this tool.</p>
+
+    <br>
+    
+    <section id="sect-video">
+        <label for="url">Enter YouTube URL / Video ID: </label>
+        <input id="url">
+        <button onclick="btnLoadPlayer()">Load Video</button>
+    
+        <br>
+        <br>
+    
+        <div id="yt-player"></div>
+    </section>
+
+    <br>
+
+    <section id="sect-subtitles">
+        <label for="subtitle-line">Enter subtitle line here: </label>
+        <input id="subtitle-line">
+        <button onclick="btnAddLine()">Add Line</button>
+
+        <br>
+        <br>
+    
+        <label for="subtitles">Subtitles: </label>
+        <br>
+        <table id="subtitles"></table>
+    </section>
+
+    <br>
+
+    <section id="sect-output">
+        <div>
+            <button onclick="btnPreview('lrc')">Preview <code>.lrc</code></button>
+            <!-- <button onclick="btnPreview('srt')">Preview <code>.srt</code></button> -->
+        </div>
+
+        <br>
+        
+        <textarea id="preview" style="display: none;" oninput="previewAutoResize()" onchange="previewAutoResize()"></textarea>
+        
+        <br>
+        
+        <div>
+            <button onclick="btnExport('lrc')">Export to <code>.lrc</code></button>
+            <!-- <button onclick="btnExport('srt')">Export to <code>.srt</code></button> -->
+        </div>
+    </section>
+
+
+    <footer>
+        All rights reserved @ 2024 Owen &nbsp; | &nbsp; <a href="https://www.github.com/owen-hwlee" target="_blank"><img src="https://github.githubassets.com/favicons/favicon.svg" width="14" height="14" /> GitHub</a>
+    </footer>
+</body>
+</html>

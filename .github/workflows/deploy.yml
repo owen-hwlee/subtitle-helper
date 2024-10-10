@@ -1,0 +1,79 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  prepare_files:
+    name: Prepare Files for Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      
+      - name: Install dependencies
+        run: npm install -g terser clean-css-cli html-minifier-terser
+      
+      - name: Minify CSS
+        run: cleancss -o style.min.css style.css
+        working-directory: src/
+        
+      - name: Minify JavaScript
+        run: terser script.js -o script.min.js
+        working-directory: src/
+        
+      - name: Update references to minified files in HTML
+        run: |
+          sed -i 's/style\.css/style.min.css/' index.html
+          sed -i 's/script\.js/script.min.js/' index.html
+        working-directory: src/
+        
+      - name: Minify HTML
+        run: |
+          npx html-minifier-terser \
+          --collapse-whitespace \
+          --remove-comments \
+          --remove-optional-tags \
+          --minify-css true \
+          --minify-js true \
+          -o index.min.html index.html
+        working-directory: src/
+        
+      - name: Replace HTML with Minified Version
+        run: mv index.min.html index.html
+        working-directory: src/
+        
+      - name: Remove Original Files
+        run: rm style.css script.js
+        working-directory: src/
+        
+      - name: Upload Artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'src/'
+
+  deploy_files:
+    needs: prepare_files
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
