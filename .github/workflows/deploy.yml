@@ -4,11 +4,26 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
   prepare_files:
     name: Prepare Files for Release
     runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      startsWith(github.event.head_commit.message, 'feat') ||         
+      startsWith(github.event.head_commit.message, 'fix') ||
+      startsWith(github.event.head_commit.message, 'refactor') ||
+      startsWith(github.event.head_commit.message, 'perf') ||
+      startsWith(github.event.head_commit.message, 'build') ||
+      startsWith(github.event.head_commit.message, 'ops') ||
+      startsWith(github.event.head_commit.message, 'Revert ')
+    # manually triggered deployment must run (workflow_dispatch); OR
+    # on push or PR, check if the commit nature is worth starting a job
 
     steps:
       - name: Checkout repository
